@@ -106,7 +106,6 @@ public class PersonTests
     }
 
     [Test]
-    [TestCase(-10)]
     [TestCase(-10.01)]
     [TestCase(-12.5)]
     [TestCase(-13.3)]

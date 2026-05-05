@@ -98,6 +98,7 @@ public class PersonPageTests
     }
 
     [Test]
+    [TestCase(-10.0)]
     [TestCase(-9.99)]
     [TestCase(-9)]
     [TestCase(5)]
