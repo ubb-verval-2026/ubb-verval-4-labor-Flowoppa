@@ -106,8 +106,20 @@ public class PersonTests
     }
 
     [Test]
-    public void IncreaseSalary_SmallerThanMinusTenPerc_ShouldFail()
+    [TestCase(-10)]
+    [TestCase(-10.01)]
+    [TestCase(-12.5)]
+    [TestCase(-13.3)]
+    [TestCase(-100)]
+    public void IncreaseSalary_InvalidValue_ShouldFail(double salaryIncreasePercentage)
     {
-        // throw new NotImplementedException();
+        var fixture = new Fixture();
+        fixture.Customize<IPaymentService>(c => c.FromFactory(() => new TestPaymentService()));
+        var sut = fixture.Create<Person>();
+
+        Action act = () => sut.IncreaseSalary(salaryIncreasePercentage);
+
+        act.Should().Throw<ArgumentOutOfRangeException>();
     }
+
 }
