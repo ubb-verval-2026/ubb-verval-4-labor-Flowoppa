@@ -95,7 +95,9 @@ public class BlazeDemoTests
     }
 
     [Test]
-    public void Demo_CheckFlights_AtLeastThree()
+    [TestCase(500)]
+    [TestCase(300)]
+    public void Demo_CheckFlights_AtLeastThree(double priceThreshold)
     {
         driver.Navigate().GoToUrl(BaseURL);
 
@@ -103,7 +105,27 @@ public class BlazeDemoTests
         new SelectElement(driver.FindElement(By.Name("toPort"))).SelectByText("Dublin");
         driver.FindElement(By.XPath("//input[@value='Find Flights']")).Click();
 
-        var rows = driver.FindElements(By.XPath("//table[@class='table']/tbody/tr"));
+        IWebElement table = driver.FindElement(By.XPath("//table[@class='table']"));
+
+        var rows = table.FindElements(By.XPath("./tbody/tr"));
+
+        foreach (var row in rows)
+        {
+            var priceText = row.FindElement(By.XPath("./td[6]")).Text;
+
+            if (double.TryParse(priceText.Replace("$", ""), out double price))
+            {
+                if (price < priceThreshold)
+                {
+                    ITakesScreenshot ssdriver = (ITakesScreenshot)row;
+                    Screenshot screenshot = ssdriver.GetScreenshot();
+                    
+                    string fileName = $"/home/floppa/FloppaCode/III_II/VerVal/ubb-verval-4-labor-Flowoppa/DatesAndStuff.Web/test/screenshots/{DateTime.Now:yyyyMMdd_HHmmss}.png";
+                    screenshot.SaveAsFile(fileName);
+                    break;
+                }
+            }
+        }
 
         int flightCount = rows.Count;
 
